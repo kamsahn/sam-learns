@@ -28,3 +28,5 @@ n = 1000
 
 js = JobScheduler(say_hello, n)
 js.schedule()
+js.schedule()
+js.schedule()
