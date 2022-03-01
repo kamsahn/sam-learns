@@ -21,7 +21,7 @@ You can represent a live cell with an asterisk (*) and a dead cell with a dot
 """
 
 class Cell():
-    def __init__(self, x, y):
+    def __init__(self, x, y, live=False):
         """
         :param x: int, x coordinate
         :param y: int, y coordinate
@@ -29,6 +29,10 @@ class Cell():
         """
         self.x = x
         self.y = y
+        self.live = live
+
+    def display(self):
+        return '*' if self.live else '.'
 
 class GameOfLife():
     def __init__(self, cells, steps):
@@ -40,18 +44,29 @@ class GameOfLife():
         self.steps = steps-1  # inc tick during play
         self.tick = 0
 
-        # max_x = max_y = -100
-        # min_x = min_y = 100
-        # for c in cells:
-        #     max_x = max(max_x, c.x)
-        #     max_y = max(max_y, c.y)
-        #     min_x = min(min_x, c.x)
-        #     min_y = min(min_y, c.y)
+        self.min_x = self.min_y = 100
+        self.max_x = self.max_y = -100
 
-        self.board = [['.' for x in range(10)] for y in range(10)]  # todo use min and max
-        for cell in cells:
-            self.board[cell.y][cell.x] = '*'
+        self.set_board()
+        # initial (tick 0 display)
+        self.display()
 
+    def set_board(self):
+        for c in self.cells:
+            self.max_x = max(self.max_x, c.x)
+            self.max_y = max(self.max_y, c.y)
+            self.min_x = min(self.min_x, c.x)
+            self.min_y = min(self.min_y, c.y)
+
+        self.board = [
+            [Cell(x, y) for x in range(self.min_x, self.max_x+1)]
+                for y in range(self.min_y, self.max_y+1)]
+
+        for cell in self.cells:
+            self.get_point(cell.x, cell.y).live = True
+
+    def get_point(self, x, y):
+        return self.board[y-self.min_y][x-self.min_x]
 
     def display(self):
         """
@@ -62,45 +77,57 @@ class GameOfLife():
         """
         print(f"\nTick #{self.tick}:")
         for i in range(len(self.board)-1, -1, -1):
-            print(self.board[i])
+            print([c.display() for c in self.board[i]])
 
-    def set_cell(self, x, y, live):
+    def set_cell(self, cell):
         neighboring_coords = [
-            (x-1, y-1),
-            (x-1, y),
-            (x-1, y+1),
-            (x, y-1),
-            (x, y+1),
-            (x+1, y-1),
-            (x+1, y),
-            (x+1, y+1),
+            (cell.x-1, cell.y-1),
+            (cell.x-1, cell.y),
+            (cell.x-1, cell.y+1),
+            (cell.x, cell.y-1),
+            (cell.x, cell.y+1),
+            (cell.x+1, cell.y-1),
+            (cell.x+1, cell.y),
+            (cell.x+1, cell.y+1),
         ]
         # count living neighbors
         live_count = 0
         for nx, ny in neighboring_coords:
-            if -1 < nx < 10 and -1 < ny < 10:
-                if self.board[ny][nx] == '*':
+            if self.min_x <= nx <= self.max_x and self.min_y <= ny <= self.max_y:
+                if self.get_point(nx, ny).live:
                     live_count += 1
-
         # set live
-        if live:
+        if cell.live:
             if live_count < 2 or live_count > 3:
-                self.board[y][x] = '.'
-
+                cell.live = False
+                self.cells = [c for c in self.cells if c != cell]
         else:
             if live_count == 3:
-                self.board[y][x] = '*'
+                cell.live = True
+                self.cells.append(cell)
 
     def play(self):
-        self.display()
         while self.tick <= self.steps:
+            new_min_x = new_min_y = 100
+            new_max_x = new_max_y = -100
             for y in range(len(self.board)):
                 for x in range(len(self.board[y])):
-                    self.set_cell(x, y, self.board[y][x] == '*')
+                    self.set_cell(self.board[y][x])
+                    new_max_x = max(new_max_x, x)
+                    new_max_y = max(new_max_y, y)
+                    new_min_x = min(new_min_x, x)
+                    new_min_y = min(new_min_y, y)
 
             # finish out
             self.tick += 1
             self.display()
+
+            # redefine board
+            self.min_x = new_min_x
+            self.min_y = new_min_y
+            self.max_x = new_max_x
+            self.max_y = new_max_y
+            self.set_board()
 
 
 game = GameOfLife(
