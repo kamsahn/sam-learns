@@ -35,7 +35,7 @@ class Cell():
         return '*' if self.live else '.'
 
 class GameOfLife():
-    def __init__(self, cells, steps):
+    def __init__(self, cells, steps, bounds=(20,20)):
         """
         :param cells: list, of cell coordinates
         :param steps: int, number of steps the game will complete
@@ -43,13 +43,24 @@ class GameOfLife():
         self.cells = cells
         self.steps = steps-1  # inc tick during play
         self.tick = 0
+        self.bounds = bounds
 
         self.min_x = self.min_y = 100
         self.max_x = self.max_y = -100
 
-        self.set_board()
+        # self.set_board()
+        self.set_bound_board()
         # initial (tick 0 display)
         self.display()
+
+    def set_bound_board(self):
+        # add an extra x and y row for expansion
+        self.board = [
+            [Cell(x, y) for x in range(self.bounds[0])]
+                for y in range(self.bounds[1])]
+
+        for cell in self.cells:
+            self.get_point(cell.x, cell.y).live = True
 
     def set_board(self):
         for c in self.cells:
@@ -58,15 +69,17 @@ class GameOfLife():
             self.min_x = min(self.min_x, c.x)
             self.min_y = min(self.min_y, c.y)
 
+        # add an extra x and y row for expansion
         self.board = [
-            [Cell(x, y) for x in range(self.min_x, self.max_x+1)]
-                for y in range(self.min_y, self.max_y+1)]
+            [Cell(x, y) for x in range(self.min_x, self.max_x+2)]
+                for y in range(self.min_y, self.max_y+2)]
 
         for cell in self.cells:
             self.get_point(cell.x, cell.y).live = True
 
     def get_point(self, x, y):
-        return self.board[y-self.min_y][x-self.min_x]
+        # return self.board[y-self.min_y][x-self.min_x]
+        return self.board[y][x]
 
     def display(self):
         """
@@ -93,18 +106,20 @@ class GameOfLife():
         # count living neighbors
         live_count = 0
         for nx, ny in neighboring_coords:
-            if self.min_x <= nx <= self.max_x and self.min_y <= ny <= self.max_y:
+            try:
                 if self.get_point(nx, ny).live:
                     live_count += 1
+            except IndexError:
+                pass
         # set live
         if cell.live:
             if live_count < 2 or live_count > 3:
                 cell.live = False
-                self.cells = [c for c in self.cells if c != cell]
+                # self.cells = [c for c in self.cells if c != cell]
         else:
             if live_count == 3:
                 cell.live = True
-                self.cells.append(cell)
+                # self.cells.append(cell)
 
     def play(self):
         while self.tick <= self.steps:
@@ -113,21 +128,21 @@ class GameOfLife():
             for y in range(len(self.board)):
                 for x in range(len(self.board[y])):
                     self.set_cell(self.board[y][x])
-                    new_max_x = max(new_max_x, x)
-                    new_max_y = max(new_max_y, y)
-                    new_min_x = min(new_min_x, x)
-                    new_min_y = min(new_min_y, y)
+                    # new_max_x = max(new_max_x, x)
+                    # new_max_y = max(new_max_y, y)
+                    # new_min_x = min(new_min_x, x)
+                    # new_min_y = min(new_min_y, y)
 
             # finish out
             self.tick += 1
             self.display()
 
-            # redefine board
-            self.min_x = new_min_x
-            self.min_y = new_min_y
-            self.max_x = new_max_x
-            self.max_y = new_max_y
-            self.set_board()
+            # # redefine board
+            # self.min_x = new_min_x
+            # self.min_y = new_min_y
+            # self.max_x = new_max_x
+            # self.max_y = new_max_y
+            # self.set_bound_board()
 
 
 game = GameOfLife(
