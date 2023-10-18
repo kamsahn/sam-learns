@@ -25,13 +25,15 @@ function treesAreEqual(node1, node2) {
     if (node1.val === node2.val) {
         if (node1.left && node1.right) {
             // node 1 has right and left branches
-            return treesAreEqual(node1.left, node2.left) && treesAreEqual(node1.right, node2.right) 
+            const leftEqual = node2.left ? treesAreEqual(node1.left, node2.left) : false
+            const rightEqual = node2.right ? treesAreEqual(node1.right, node2.right) : false
+            return leftEqual && rightEqual
         } else if (node1.left) {
             // node 1 has only left branches
-            return treesAreEqual(node1.left, node2.left)
+            return node2.left ? treesAreEqual(node1.left, node2.left) : false
         } else if (node1.right) {
             // node 1 has only right branches
-            return treesAreEqual(node1.right, node2.right)
+            return node2.right ? treesAreEqual(node1.right, node2.right) : false
         } else {
             // node 1 has no branches
             return true
