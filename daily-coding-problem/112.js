@@ -72,6 +72,7 @@ function main(v, w) {
 }
 
 // Testing
+// node creation
 const node0 = new Node(0)
 const node1 = new Node(1)
 const node2 = new Node(2)
@@ -81,11 +82,15 @@ const node5 = new Node(5)
 const node6 = new Node(6)
 const node7 = new Node(7)
 const node8 = new Node(8)
-
+// node association
 node0.setChildren(node1, node4)
 node1.setChildren(node2, node3)
 node4.setChildren(node5)
 node5.setChildren(node6, node7)
 node7.setChildren(node8)
 
-console.log(main(node1, node8))
+console.log(main(node2, node3))
+console.log(main(node5, node6))
+console.log(main(node7, node8))
+console.log(main(node2, node6))
+
