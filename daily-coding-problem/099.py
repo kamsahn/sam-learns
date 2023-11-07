@@ -24,9 +24,23 @@ def longest_sequence(nums: list) -> int:
             if seq[-1] + 1 == num:
                 seq.append(num)
             else:
-                high_len = len(seq) if len(seq) > high_len else high_len
+                high_len = max(len(seq), high_len)
                 seq = [num]
-    return len(seq) if len(seq) > high_len else high_len
+    return max(len(seq), high_len)
+
+
+# from online
+def longest_sequence_2(nums: list) -> int:
+    high_len = 0
+    for num in nums:
+        if (num - 1) not in nums:
+            # num is the start of a sequence
+            j = num
+            while j in nums:
+                j += 1
+            high_len = max(high_len, j - num)
+    return high_len
+
 
 
 if __name__ == "__main__":
@@ -34,4 +48,10 @@ if __name__ == "__main__":
     print(longest_sequence([1, 1, 1, 1, 1]))
     print(longest_sequence([3, 2, 1, 0]))
     print(longest_sequence([-3, -2, 2, 0, -1, 3]))
-    print(longest_sequence([[0]]))
+    print(longest_sequence([0]))
+
+    print(longest_sequence_2([8, 100, 10, 11, 6, 4, 200, 1, 3, 7, 2, 9]))
+    print(longest_sequence_2([1, 1, 1, 1, 1]))
+    print(longest_sequence_2([3, 2, 1, 0]))
+    print(longest_sequence_2([-3, -2, 2, 0, -1, 3]))
+    print(longest_sequence_2([0]))
