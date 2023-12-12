@@ -12,11 +12,8 @@ You can assume the list has at least three integers.
 
 def largest_product(l: list[int]) -> int:
     l.sort()
-    ans = l[-3]*l[-2]*l[-1]
-    if l[0] < 0 and l[1] < 0:
-        return max(l[0]*l[1]*l[-1], ans)
-    else:
-        return ans
+    # if first two are negative, could be the largest product
+    return max(l[0]*l[1]*l[-1], l[-3]*l[-2]*l[-1])
 
 if __name__ == "__main__":
     print("expected 500", largest_product([-10, -10, 5, 2]))
