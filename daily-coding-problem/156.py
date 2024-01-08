@@ -27,7 +27,3 @@ if __name__ == "__main__":
     print(smallest_num_squared(27, []))
     print(smallest_num_squared(28, []))
     print(smallest_num_squared(29, []))
-
-
-        
-            
