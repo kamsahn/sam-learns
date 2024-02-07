@@ -5,7 +5,7 @@ import router from "./router.js";
 const hostname = '127.0.0.1';
 const port = 3000;
 
-// Listener
+// Listener (data unpacker)
 function requestListener (req, res, callback) {
     res.setHeader('Content-Type', 'application/json');
     let body = '';

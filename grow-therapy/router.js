@@ -2,7 +2,7 @@ import pageviews from 'pageviews';
 
 import { getDateFromDateString,
     getEndDateFromStartDate,
-    getDaysOfTheMonth } from "./helpers.js";
+    getDaysOfTheMonth } from './helpers.js';
 
 function router(res, req, body) {
     // common attributes
@@ -98,7 +98,7 @@ function router(res, req, body) {
 
         default:
             res.statusCode = 404;
-            res.end("resource not found");
+            res.end('resource not found');
     }
 }
 
