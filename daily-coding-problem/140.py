@@ -23,3 +23,28 @@ def two_only_once(arr: list[int]) -> list[int]:
 
 if __name__ == "__main__":
     print(two_only_once([2, 4, 6, 8, 10, 2, 6, 10]))
+
+
+""" written in Kotlin
+    fun main() {
+
+    fun twoOnlyOnce(arr: List<Int>): List<Int> {
+        val store = hashMapOf<Int, Int>()
+
+        arr.forEach { num -> (
+            if (store.get(num) == 1) {
+                store.remove(num)
+            } else {
+                store.set(num, 1)
+            }
+        )}
+
+        val keys = store.keys
+        return keys.toList()
+    }
+
+    val arr = listOf(2, 4, 6, 8, 10, 2, 6, 10)
+    val ans = twoOnlyOnce(arr)
+    println(ans)
+}
+"""
