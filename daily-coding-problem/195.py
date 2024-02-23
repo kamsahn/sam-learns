@@ -95,7 +95,3 @@ if __name__ == "__main__":
     println(smallerAndLarger(m, i1, j1, i2, j2))
 }
 """
-    
-    
-    
-    
