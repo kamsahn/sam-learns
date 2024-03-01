@@ -38,7 +38,6 @@ def any_overlap(rectangles: list[dict]) -> bool:
         for j in range(i+1, len(rectangles)):
             r1 = rectangles[i]
             r2 = rectangles[j]
-            c += 1
             if is_overlapping(r1["top_left"], r1["dimensions"], r2["top_left"], r2["dimensions"]):
                 return True
     return False
